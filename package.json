@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-     "render-build": "npm install --legacy-peer-deps && npm run build"
+    "render-build": "npm install --force && npm run build"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
