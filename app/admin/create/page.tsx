@@ -1,4 +1,4 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth"
 import Check from "@/app/feature/chekAdmin";
 import { prisma } from "@/lib/prisma"
 import { getServerSession } from "next-auth";
@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 
 async function createProduct(formData: FormData) {
   "use server"
-  const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions) 
   if (!session || session.user.role !== "admin") {
     return 
   }
