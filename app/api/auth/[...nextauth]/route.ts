@@ -3,10 +3,11 @@ import GitHubProvider from "next-auth/providers/github"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { PrismaClient } from "@prisma/client"
 import type { Adapter } from "next-auth/adapters"
+import type { NextAuthOptions } from "next-auth"
 
 const prisma = new PrismaClient()
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as Adapter,
   providers: [
     GitHubProvider({
@@ -14,15 +15,11 @@ export const authOptions = {
       clientSecret: process.env.GITHUB_SECRET!,
     })
   ],
-  // ADD THIS CALLBACKS SECTION ↓
- callbacks: {
-  async session({ session, user }: { session: any; user: any }) {
-    session.user.id = user.id
-    session.user.role = user.role
-    return session
+  callbacks: {
+    async session({ session, user }: { session: any; user: any }) {
+      session.user.id = user.id
+      session.user.role = user.role
+      return session
+    }
   }
 }
-}
-
-const handler = NextAuth(authOptions)
-export { handler as GET, handler as POST }
