@@ -1,5 +1,5 @@
 // app/more/view/page.tsx
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth"
 import { Button } from "@/components/ui/button";
 import { StarRating } from "@/components/ui/star-rating";
 import { prisma } from "@/lib/prisma";

@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import Check from "../feature/chekAdmin";
 import { prisma } from "@/lib/prisma";
 import { getServerField } from "next/dist/server/lib/render-server";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth"
 import { getServerSession } from "next-auth";
 import { Show } from "../feature/showCard";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,12 @@ export default async function Admin(){
   try {
     const usrRole = await Check();
     const session = await getServerSession(authOptions)
+    
+    // Check if session or user is null
+    if (!session?.user?.id) {
+      return(<h1>Please log in first and then we talk</h1>)
+    }
+    
     const products = await prisma.product.findMany({
       where: {
         createdById: session.user.id
@@ -19,11 +25,11 @@ export default async function Admin(){
     })
     
     if (!usrRole){
-      return(<h1> please log in first and then we talk </h1>)
+      return(<h1>Please log in first and then we talk</h1>)
     }
     
     if (usrRole !== "admin"){  
-      return (<h1>hey you are not admin ask your manager to promote you to admin and then try to come here and do this thing</h1>)
+      return (<h1>Hey you are not admin. Ask your manager to promote you to admin and then try to come here and do this thing</h1>)
     }
     else {
       return (
@@ -68,7 +74,7 @@ export default async function Admin(){
         fontSize: '24px',
         fontWeight: 'bold'
       }}>
-        Something went wrong  make sure to log in and also make sure that you  are admin !
+        Something went wrong. Make sure to log in and also make sure that you are admin!
       </h1>
     );
   }
