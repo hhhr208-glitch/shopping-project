@@ -1,24 +1,25 @@
+// app/admin/create/page.tsx
 import { authOptions } from "@/lib/auth"
-import Check from "@/app/feature/chekAdmin";
 import { prisma } from "@/lib/prisma"
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth"
+import { redirect } from "next/navigation"
 
+// Server Action
 async function createProduct(formData: FormData) {
   "use server"
   const session = await getServerSession(authOptions) 
   if (!session || session.user.role !== "admin") {
-    return 
+    throw new Error("Unauthorized")
   }
-  else {
 
-const name = formData.get("name") as string
+  const name = formData.get("name") as string
   const description = formData.get("description") as string
   const price = parseFloat(formData.get("price") as string)
   const image = formData.get("image") as string
   const category = formData.get("category") as string
   const stock = parseInt(formData.get("stock") as string)
-  const  createdById = session.user.id
+  const createdById = session.user.id
+
   await prisma.product.create({
     data: {
       name,
@@ -31,16 +32,17 @@ const name = formData.get("name") as string
     }
   })
 
-  }
   redirect("/admin")
-  
 }
 
+// The main page component
 export default function AdminProductsPage() {
   return (
     <div className="container mx-auto p-6 max-w-md animate-fade-in">
-      <h1 className="text-2xl font-bold mb-6 transition-all hover:scale-105">Create Product</h1>
-      
+      <h1 className="text-2xl font-bold mb-6 transition-all hover:scale-105">
+        Create Product
+      </h1>
+
       <form action={createProduct} className="space-y-4">
         <div className="transition-all hover:scale-[1.02]">
           <label className="block text-sm font-medium mb-1">Product Name</label>
@@ -100,13 +102,21 @@ export default function AdminProductsPage() {
           />
         </div>
 
-        <button 
-          type="submit" 
-          className="w-full bg-black text-white py-2 px-4 rounded hover:bg-gray-800 transition-all transform hover:scale-105 shadow-lg font-semibold"
-        >
-          Create Product
-        </button>
+        {/* Submit button with loading state using form action */}
+        <SubmitButton />
       </form>
     </div>
+  )
+}
+
+// Submit button component - IN THE SAME FILE
+function SubmitButton() {
+  return (
+    <button 
+      type="submit" 
+      className="w-full bg-black text-white py-2 px-4 rounded hover:bg-gray-800 transition-all transform hover:scale-105 shadow-lg font-semibold"
+    >
+      Create Product
+    </button>
   )
 }

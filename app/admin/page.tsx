@@ -1,65 +1,54 @@
 import { redirect } from "next/navigation";
-import Check from "../feature/chekAdmin";
 import { prisma } from "@/lib/prisma";
-import { getServerField } from "next/dist/server/lib/render-server";
 import { authOptions } from "@/lib/auth"
 import { getServerSession } from "next-auth";
 import { Show } from "../feature/showCard";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { getCachedProducts } from '@/lib/cache'
 
 export default async function Admin(){
   try {
-    const usrRole = await Check();
+  
     const session = await getServerSession(authOptions)
     
-    // Check if session or user is null
-    if (!session?.user?.id) {
-      return(<h1>Please log in first and then we talk</h1>)
+    if (!session?.user) {
+      return <h1>Please log in first</h1>
     }
     
-    const products = await prisma.product.findMany({
-      where: {
-        createdById: session.user.id
-      }
-    })
-    
-    if (!usrRole){
-      return(<h1>Please log in first and then we talk</h1>)
+    if (session.user.role !== "admin") {  
+      return <h1>Hey you are not admin. Ask your manager to promote you</h1>
     }
     
-    if (usrRole !== "admin"){  
-      return (<h1>Hey you are not admin. Ask your manager to promote you to admin and then try to come here and do this thing</h1>)
-    }
-    else {
-      return (
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex justify-between items-center mb-8">
-            <h1 className="text-2xl font-bold">Admin Products</h1>
-            <Link href="/admin/create">
-              <Button className="flex items-center gap-2 transition-transform duration-200 hover:scale-105">
-                <span>+</span>
-                <span>Add Product</span>
-              </Button>
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-6 justify-center justify-items-center">
-            {products.map((product) => (
-              <div 
-                key={product.id}
-                className="transition-transform duration-300 hover:scale-105 cursor-pointer"
-              >
-                <Show 
-                  variant="admin"
-                  product={product}
-                />
-              </div>
-            ))}
-          </div>
+      const products = await getCachedProducts(session.user.id)
+    
+    return (
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-2xl font-bold">Admin Products</h1>
+          <Link href="/admin/create">
+            <Button className="flex items-center gap-2 transition-transform duration-200 hover:scale-105">
+              <span>+</span>
+              <span>Add Product</span>
+            </Button>
+          </Link>
         </div>
-      )
-    }
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-6 justify-center justify-items-center">
+          {products.map((product) => (
+            <div 
+              key={product.id}
+              className="transition-transform duration-300 hover:scale-105 cursor-pointer"
+            >
+              <Show 
+                variant="admin"
+                product={product}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    )
   }
   catch {
     return (

@@ -9,6 +9,8 @@ import Image from 'next/image';
 import { redirect } from "next/navigation";
 import { useState } from "react";
 import sanitizeHtml from "sanitize-html"
+import { getCachedProduct } from "@/lib/cachemore";
+
 
 interface ViewPageProps {
   searchParams: Promise<{
@@ -81,10 +83,7 @@ export default async function ViewPage({ searchParams }: ViewPageProps) {
     return <div>No product selected</div>;
   }
 
-  const product = await prisma.product.findUnique({
-    where: { id: productId }
-  });
-
+  const product = await getCachedProduct(productId)
   if (!product) {
     return <div>Product not found</div>;
   }

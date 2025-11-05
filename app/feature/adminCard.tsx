@@ -5,8 +5,7 @@ import { Edit, Trash2 } from "lucide-react"
 import { revalidatePath } from "next/cache"
 import Image from 'next/image'
 import Link from "next/link"
-import Check from "./chekAdmin"
-// Define the types
+
 interface Product {
   id: string
   name: string
@@ -28,19 +27,14 @@ interface ProductComment {
   userId?: string
 }
 
-// ✅ CORRECT INTERFACE NAME
 interface AdminCardProps {
   product: Product
   comments?: ProductComment[]
 }
 
+
 async function Deletecard(formdata: FormData) {
   "use server"
-  const user = await Check()
-  if (!user || user !== "admin") {
-    throw new Error("Unauthorized: Admin access required")
-  }
-
   const productId = formdata.get("productId") as string
   if (!productId) {
     throw new Error("Product ID is required")
@@ -56,10 +50,8 @@ async function Deletecard(formdata: FormData) {
   }
 }
 
-// ✅ CORRECT FUNCTION SIGNATURE
+// ✅ CLEANER component without admin checks
 export function AdminCard({ product, comments = [] }: AdminCardProps) {
-
-  
     return (   
         <Card className="w-80">
             <CardHeader>
@@ -68,7 +60,6 @@ export function AdminCard({ product, comments = [] }: AdminCardProps) {
             </CardHeader>
 
             <CardContent className="space-y-4">
-                {/* Image Section */}
                 {product.image && (
                   <Image 
                     src={product.image} 
@@ -79,7 +70,6 @@ export function AdminCard({ product, comments = [] }: AdminCardProps) {
                   />
                 )}
                 
-                {/* Product Info */}
                 <div className="space-y-2">
                     <div className="flex justify-between">
                         <span>Price:</span>
@@ -105,7 +95,6 @@ export function AdminCard({ product, comments = [] }: AdminCardProps) {
             </CardContent>
 
             <CardFooter className="flex gap-2">
-                {/* ✅ FIXED EDIT LINK */}
                 <Link href={`/admin/edit/${product.id}`} className="flex-1">
                   <Button variant="outline" className="w-full gap-2">
                     <Edit className="w-4 h-4" />
@@ -113,14 +102,19 @@ export function AdminCard({ product, comments = [] }: AdminCardProps) {
                   </Button>
                 </Link>
 
-                {/* Delete Form */}
-                <form action={Deletecard} className="flex-1">
-                    <input type="text" hidden value={product.id} name="productId" readOnly />
-                    <Button variant="destructive" className="w-full gap-2" type="submit">
-                        <Trash2 className="w-4 h-4" />
-                        Delete
-                    </Button>
-                </form>
+            
+<form action={Deletecard} className="flex-1">
+    <input type="text" hidden value={product.id} name="productId" readOnly />
+    <Button 
+        variant="destructive" 
+        className="w-full gap-2" 
+        type="submit"
+        // Add loading state props here
+    >
+        <Trash2 className="w-4 h-4" />
+        Delete
+    </Button>
+</form>
             </CardFooter>
         </Card>
     )

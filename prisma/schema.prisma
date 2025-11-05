@@ -119,3 +119,13 @@ model Comment {
   // Ensures one comment per user per product
   @@unique([productId, userId])
 }
+model VerificationCode {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  code      String
+  expiresAt DateTime
+  attempts  Int      @default(0)
+  createdAt DateTime @default(now())
+  
+  @@map("verification_codes")
+}
