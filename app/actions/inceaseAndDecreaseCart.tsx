@@ -1,14 +1,10 @@
 "use server"
 
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 
 export async function incrementQuantity(formData: FormData) {
-  const session = await getServerSession(authOptions)
-  if (!session) throw new Error("Please log in!")
-  
+
   const cartItemId = formData.get("cartItemId") as string
   if (!cartItemId) throw new Error("Cart item ID is required")
   
@@ -27,8 +23,7 @@ export async function incrementQuantity(formData: FormData) {
 }
 
 export async function decrementQuantity(formData: FormData) {
-  const session = await getServerSession(authOptions)
-  if (!session) throw new Error("Please log in!")
+
   
   const cartItemId = formData.get("cartItemId") as string
   if (!cartItemId) throw new Error("Cart item ID is required")

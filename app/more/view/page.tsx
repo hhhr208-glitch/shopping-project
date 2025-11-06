@@ -10,6 +10,7 @@ import { redirect } from "next/navigation";
 import { useState } from "react";
 import sanitizeHtml from "sanitize-html"
 import { getCachedProduct } from "@/lib/cachemore";
+import { SubmitButton } from "@/components/submit-button";
 
 
 interface ViewPageProps {
@@ -264,12 +265,7 @@ export default async function ViewPage({ searchParams }: ViewPageProps) {
         <StarRating />
       </div>     <input hidden readOnly value={productId} name="productId" />
             
-            <Button 
-              type="submit" 
-              className="w-full  hover:from-blue-700 hover:to-purple-700 text-white py-3 px-6 rounded-xl font-semibold text-lg transition-all transform hover:scale-105 shadow-lg"
-            >
-              📝 Post Comment
-            </Button>
+           <SubmitButton/>
           </form>
         </div>
       </div>

@@ -1,8 +1,9 @@
+import { EditButton } from "@/components/edit-button"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { getServerSession } from "next-auth"
 import { redirect } from "next/navigation"
-
+import { revalidateTag } from 'next/cache'
 async function editProduct(formdata: FormData) {
   "use server"
   const session = await getServerSession(authOptions)
@@ -33,6 +34,7 @@ async function editProduct(formdata: FormData) {
       }
     })
   }
+   revalidateTag('admin-products')
   redirect("/admin")
 }
 
@@ -117,12 +119,10 @@ export default async function AdminEdit({
           />
         </div>
 
-        <button 
-          type="submit" 
-          className="w-full bg-black text-white py-2 px-4 rounded hover:bg-gray-800 transition-all transform hover:scale-105 shadow-lg font-semibold"
-        >
-          Edit Product
-        </button>
+
+
+      <EditButton/>
+      
         <input hidden readOnly value={productId} name="productId" />
       </form>
     </div>

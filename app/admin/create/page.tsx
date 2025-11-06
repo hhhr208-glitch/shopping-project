@@ -1,9 +1,10 @@
 // app/admin/create/page.tsx
+import { CreateButton } from "@/components/createButton"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { getServerSession } from "next-auth"
 import { redirect } from "next/navigation"
-
+import { revalidateTag } from 'next/cache'
 // Server Action
 async function createProduct(formData: FormData) {
   "use server"
@@ -31,7 +32,7 @@ async function createProduct(formData: FormData) {
       createdById,
     }
   })
-
+revalidateTag('admin-products')
   redirect("/admin")
 }
 
@@ -112,11 +113,6 @@ export default function AdminProductsPage() {
 // Submit button component - IN THE SAME FILE
 function SubmitButton() {
   return (
-    <button 
-      type="submit" 
-      className="w-full bg-black text-white py-2 px-4 rounded hover:bg-gray-800 transition-all transform hover:scale-105 shadow-lg font-semibold"
-    >
-      Create Product
-    </button>
+   <CreateButton/>
   )
 }

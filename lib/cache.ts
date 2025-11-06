@@ -19,9 +19,8 @@ export const getCachedProducts = unstable_cache(
       orderBy: { id: 'desc' }
     })
   },
-  ['admin-products'],
+  ['admin-products'], 
   { 
-    revalidate: 30, 
-    tags: ['products'] 
+    tags: ['admin-products'] // Use specific tag
   }
 )
