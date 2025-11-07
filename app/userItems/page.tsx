@@ -4,7 +4,7 @@ import { Show } from "../feature/showCard";
 import { prisma } from "@/lib/prisma";
 
 export default  async function Cart(){
-
+let  total = 0 
 
     const session = await getServerSession(authOptions)
     if (!session) return <h1>there is no thing to show man ! first chooes something</h1>
@@ -26,6 +26,9 @@ export default  async function Cart(){
                 key={cartitem.product.id}
                 className="transition-transform duration-300 hover:scale-105 cursor-pointer"
               >
+              <p className="hidden">
+  {total = total + cartitem.product.price * cartitem.quantity}
+</p>
                 <Show
                   variant="user"
                   product={cartitem.product}
@@ -34,7 +37,12 @@ export default  async function Cart(){
                 />
               </div>
             ))}
+            
           </div>
+         <div className="text-center mt-8 p-6 bg-gray-100 rounded-lg">
+    <p className="text-gray-600 text-lg">Total Amount:</p>
+    <p className="text-3xl font-bold text-gray-800">${total.toFixed(2)}</p>
+  </div>
         </div>
   );
 

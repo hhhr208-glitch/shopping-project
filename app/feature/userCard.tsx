@@ -1,7 +1,8 @@
-import { Button } from "@/components/ui/button"
+
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import Image from 'next/image'
-import { decrementQuantity, incrementQuantity } from "../actions/inceaseAndDecreaseCart"
+import { DeacreaseButton } from "@/components/decreaseButton" 
+import { IncrementButton } from "@/components/increaseButton"
 
 interface Product {
   id: string
@@ -69,39 +70,16 @@ export function UserCard({ product, quantity = 1, cartId }: UserCardProps) {
             <div className="text-xs text-gray-500">Stock: {product.stock}</div>
           </div>
         </div>
-
-        {product.stock < 10 && (
-          <p className="text-sm text-red-500 text-center font-medium bg-red-50 py-1 rounded">
-            ⚠️ Only {product.stock} left in stock!
-          </p>
-        )}
       </CardContent>
 
       <CardFooter className="flex gap-2">
-        {/* REMOVED onClick - using only server actions */}
-        <form action={decrementQuantity} className="flex-1">
-          <input type="hidden" name="cartItemId" value={cartId} />
-          <Button 
-            variant="outline" 
-            className="w-full h-10"
-            type="submit"
-            disabled={!cartId || quantity <= 1}
-          >
-            -
-          </Button>
-        </form>
         
-        {/* REMOVED onClick - using only server actions */}
-        <form action={incrementQuantity} className="flex-1">
-          <input type="hidden" name="cartItemId" value={cartId} />
-          <Button 
-            className="w-full h-10"
-            type="submit"
-            disabled={!cartId || quantity >= product.stock}
-          >
-            +
-          </Button>
-        </form>
+        {cartId && (
+          <>
+            <DeacreaseButton cartId={cartId} quantity={quantity} product={product} />
+            <IncrementButton cartId={cartId} quantity={quantity} product={product} />
+          </>
+        )}
       </CardFooter>
     </Card>
   )

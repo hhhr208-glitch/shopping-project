@@ -29,7 +29,7 @@ interface ShowProps {
   product: Product; 
   quantity?: number;
   cartId?: string;
-  comments?: ProductComment[]; // ✅ CHANGE TO ProductComment[]
+  comments?: ProductComment[]; 
 }
 
 export function Show({ variant, product, quantity, cartId, comments = [] }: ShowProps) { 
