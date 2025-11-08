@@ -4,4 +4,3 @@ i still work on this after finishig i gonna update read me file ,  so yep for no
  The performance issues were entirely due to 
 free cloud database limitations, which I identified through 
 systematic performance testing."
-https://shopping-project-14.onrender.com
